@@ -80,9 +80,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // 粘贴SQL
     pasteBtn.addEventListener('click', function () {
-        const clipboardText = window.utools ? window.utools.getClipboardText() : '';
-        if (clipboardText) {
-            sqlInput.value = clipboardText;
+        if (window.utoolsHelper && typeof window.utoolsHelper.getClipboardText === 'function') {
+            const clipboardText = window.utoolsHelper.getClipboardText();
+            if (clipboardText) {
+                sqlInput.value = clipboardText;
+            }
+        } else if (window.utools && typeof window.utools.readText === 'function') {
+            const clipboardText = window.utools.readText();
+            if (clipboardText) {
+                sqlInput.value = clipboardText;
+            }
         }
     });
 
@@ -91,8 +98,27 @@ document.addEventListener('DOMContentLoaded', function () {
         const output = sqlOutput.value.trim();
         if (!output) return;
 
-        const success = window.utools ? window.utools.copyText(output) : false;
-        if (success || document.execCommand('copy')) {
+        let success = false;
+
+        // 首先尝试使用utoolsHelper
+        if (window.utoolsHelper && typeof window.utoolsHelper.copyText === 'function') {
+            success = window.utoolsHelper.copyText(output);
+        }
+        // 如果失败或者不存在，尝试使用原生utools API
+        else if (window.utools && typeof window.utools.copyText === 'function') {
+            success = window.utools.copyText(output);
+        }
+        // 最后尝试使用document.execCommand
+        else {
+            try {
+                sqlOutput.select();
+                success = document.execCommand('copy');
+            } catch (e) {
+                console.error('复制失败', e);
+            }
+        }
+
+        if (success) {
             showCopyTooltip();
         }
     });

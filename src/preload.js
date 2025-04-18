@@ -27,13 +27,14 @@ window.exports = {
 };
 
 // 工具函数
-window.utools = {
+window.utoolsHelper = {
     // 复制文本到剪贴板
     copyText: (text) => {
-        if (window.utools && window.utools.copyText) {
-            window.utools.copyText(text);
-            return true;
+        // 使用原生的 uTools API
+        if (window.utools && typeof window.utools.copyText === 'function') {
+            return window.utools.copyText(text);
         } else {
+            // 兼容浏览器环境
             try {
                 const textarea = document.createElement('textarea');
                 textarea.value = text;
@@ -53,7 +54,7 @@ window.utools = {
 
     // 从剪贴板获取文本
     getClipboardText: () => {
-        if (window.utools && window.utools.readText) {
+        if (window.utools && typeof window.utools.readText === 'function') {
             return window.utools.readText();
         }
         return '';
@@ -61,7 +62,7 @@ window.utools = {
 
     // 获取系统主题
     getTheme: () => {
-        if (window.utools && window.utools.isDarkColors) {
+        if (window.utools && typeof window.utools.isDarkColors === 'function') {
             return window.utools.isDarkColors() ? 'dark' : 'light';
         }
 
@@ -73,7 +74,7 @@ window.utools = {
 
 // 当页面加载完成，初始化主题
 document.addEventListener('DOMContentLoaded', () => {
-    const theme = window.utools.getTheme();
+    const theme = window.utoolsHelper.getTheme();
     if (theme === 'dark') {
         document.body.setAttribute('data-theme', 'dark');
         const themeSwitch = document.getElementById('theme-switch');
