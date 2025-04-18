@@ -28,6 +28,15 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 2000);
     }
 
+    // 辅助函数：显示自定义提示
+    function showTooltip(message) {
+        copyTooltip.textContent = message;
+        copyTooltip.classList.add('show');
+        setTimeout(() => {
+            copyTooltip.classList.remove('show');
+        }, 2000);
+    }
+
     // 压缩SQL
     compressBtn.addEventListener('click', function () {
         const sql = sqlInput.value.trim();
@@ -84,11 +93,19 @@ document.addEventListener('DOMContentLoaded', function () {
             const clipboardText = window.utoolsHelper.getClipboardText();
             if (clipboardText) {
                 sqlInput.value = clipboardText;
+                // 自动调整高度
+                autoResizeTextarea(sqlInput);
+                // 显示提示
+                showTooltip('SQL已粘贴');
             }
-        } else if (window.utools && typeof window.utools.readText === 'function') {
-            const clipboardText = window.utools.readText();
+        } else if (typeof utools !== 'undefined' && typeof utools.readText === 'function') {
+            const clipboardText = utools.readText();
             if (clipboardText) {
                 sqlInput.value = clipboardText;
+                // 自动调整高度
+                autoResizeTextarea(sqlInput);
+                // 显示提示
+                showTooltip('SQL已粘贴');
             }
         }
     });
@@ -105,8 +122,8 @@ document.addEventListener('DOMContentLoaded', function () {
             success = window.utoolsHelper.copyText(output);
         }
         // 如果失败或者不存在，尝试使用原生utools API
-        else if (window.utools && typeof window.utools.copyText === 'function') {
-            success = window.utools.copyText(output);
+        else if (typeof utools !== 'undefined' && typeof utools.copyText === 'function') {
+            success = utools.copyText(output);
         }
         // 最后尝试使用document.execCommand
         else {
@@ -181,6 +198,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 } else if (e.dataTransfer.items[i].kind === 'string') {
                     e.dataTransfer.items[i].getAsString((s) => {
                         this.value = s;
+                        // 自动调整高度
+                        autoResizeTextarea(this);
                     });
                     break;
                 }
@@ -193,6 +212,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const reader = new FileReader();
         reader.onload = function (e) {
             sqlInput.value = e.target.result;
+            // 自动调整高度
+            autoResizeTextarea(sqlInput);
         };
         reader.readAsText(file);
     }
@@ -217,8 +238,21 @@ document.addEventListener('DOMContentLoaded', function () {
         pasteBtn.click();
     }
 
+    // 检查是否有从preload传递的SQL
+    if (window.sqlFromClipboard) {
+        console.log('从preload中获取到SQL，填充到输入框');
+        sqlInput.value = window.sqlFromClipboard;
+        autoResizeTextarea(sqlInput);
+        // 可选：自动执行美化操作
+        // formatBtn.click();
+    }
+
     // 设置输入框焦点
     setTimeout(() => {
+        // 再次检查是否有SQL内容（可能由preload.js在setTimeout中填充）
+        if (sqlInput.value) {
+            autoResizeTextarea(sqlInput);
+        }
         sqlInput.focus();
-    }, 100);
+    }, 200);
 }); 

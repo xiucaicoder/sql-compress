@@ -24,8 +24,19 @@
                     "match": "/\\s*(SELECT|INSERT|UPDATE|DELETE|CREATE|DROP|ALTER|WITH|TRUNCATE)\\s+.+/i",
                     "minLength": 10,
                     "maxLength": 100000
+                },
+                {
+                    "type": "over",
+                    "label": "SQL压缩/美化",
+                    "match": "/\\s*(SELECT|INSERT|UPDATE|DELETE|CREATE|DROP|ALTER|WITH|TRUNCATE)\\s+.+/i",
+                    "minLength": 10,
+                    "maxLength": 100000
                 }
             ]
         }
-    ]
+    ],
+    "preload": "src/preload.js",
+    "development": {
+        "main": "index.html"
+    }
 }
