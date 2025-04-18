@@ -1,0 +1,45 @@
+{
+    "pluginName": "SQL格式化压缩",
+    "description": "一款功能强大的SQL格式化和压缩工具",
+    "version": "1.0.0",
+    "author": "SQL Assistant",
+    "homepage": "https://github.com/xiucaicoder/sql-compress",
+    "main": "index.html",
+    "logo": "logo.png",
+    "preload": "preload.js",
+    "development": {
+        "main": "http://localhost:3000"
+    },
+    "features": [
+        {
+            "code": "sql-compress",
+            "explain": "SQL格式化压缩",
+            "cmds": [
+                "sql",
+                "SQL",
+                "sql压缩",
+                "sql格式化",
+                "SQL压缩",
+                "SQL格式化"
+            ]
+        },
+        {
+            "code": "sql-from-clipboard",
+            "explain": "从剪切板读取SQL",
+            "cmds": [
+                "option+space"
+            ]
+        },
+        {
+            "code": "sql-formatter",
+            "explain": "检测SQL输入",
+            "cmds": [
+                {
+                    "type": "regex",
+                    "match": "(?i)^\\s*(select|insert|update|delete|create|alter|drop)\\s+.*",
+                    "minLength": 10
+                }
+            ]
+        }
+    ]
+}
