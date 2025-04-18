@@ -1,43 +1,29 @@
 {
-    "pluginName": "SQL格式化压缩",
-    "description": "一款功能强大的SQL格式化和压缩工具",
-    "version": "1.0.0",
-    "author": "SQL Assistant",
-    "homepage": "https://github.com/xiucaicoder/sql-compress",
+    "pluginName": "SQL压缩工具",
+    "description": "一款简洁高效的SQL压缩美化工具",
     "main": "index.html",
+    "version": "0.1.0",
     "logo": "logo.png",
-    "preload": "preload.js",
-    "development": {
-        "main": "http://localhost:3000"
-    },
+    "author": "SQLCompressTeam",
+    "homepage": "https://github.com",
     "features": [
         {
             "code": "sql-compress",
-            "explain": "SQL格式化压缩",
+            "explain": "SQL压缩/美化工具",
             "cmds": [
-                "sql",
-                "SQL",
                 "sql压缩",
+                "sql美化",
                 "sql格式化",
-                "SQL压缩",
-                "SQL格式化"
-            ]
-        },
-        {
-            "code": "sql-from-clipboard",
-            "explain": "从剪切板读取SQL",
-            "cmds": [
-                "option+space"
-            ]
-        },
-        {
-            "code": "sql-formatter",
-            "explain": "检测SQL输入",
-            "cmds": [
+                "sqlcompress",
+                "sqlformat",
+                "压缩sql",
+                "格式化sql",
                 {
                     "type": "regex",
-                    "match": "(?i)^\\s*(select|insert|update|delete|create|alter|drop)\\s+.*",
-                    "minLength": 10
+                    "label": "匹配SQL语句",
+                    "match": "/\\s*(SELECT|INSERT|UPDATE|DELETE|CREATE|DROP|ALTER|WITH|TRUNCATE)\\s+.+/i",
+                    "minLength": 10,
+                    "maxLength": 100000
                 }
             ]
         }

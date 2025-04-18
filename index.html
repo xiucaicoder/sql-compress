@@ -4,13 +4,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SQL格式化压缩</title>
-    <link rel="stylesheet" href="style.css">
+    <title>SQL压缩工具</title>
+    <link rel="stylesheet" href="src/styles.css">
 </head>
 
 <body>
-    <div id="root"></div>
-    <script src="index.js"></script>
+    <div class="container">
+        <div class="header">
+            <h1>SQL压缩工具</h1>
+            <div class="theme-toggle">
+                <span class="theme-icon light-icon">☀️</span>
+                <label class="switch">
+                    <input type="checkbox" id="theme-switch">
+                    <span class="slider round"></span>
+                </label>
+                <span class="theme-icon dark-icon">🌙</span>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="input-section">
+                <div class="section-header">
+                    <h2>输入SQL</h2>
+                    <button id="clear-input" class="small-btn">清空</button>
+                    <button id="paste-sql" class="small-btn">粘贴</button>
+                </div>
+                <textarea id="sql-input" placeholder="请输入或粘贴SQL语句..."></textarea>
+            </div>
+
+            <div class="buttons-section">
+                <button id="compress-btn" class="action-btn">压缩SQL</button>
+                <button id="format-btn" class="action-btn">美化SQL</button>
+                <div class="options">
+                    <label>
+                        <input type="checkbox" id="keep-comments" checked>
+                        保留注释
+                    </label>
+                    <select id="sql-dialect">
+                        <option value="sql" selected>标准SQL</option>
+                        <option value="mysql">MySQL</option>
+                        <option value="postgresql">PostgreSQL</option>
+                        <option value="tsql">SQL Server</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="output-section">
+                <div class="section-header">
+                    <h2>结果</h2>
+                    <button id="copy-output" class="small-btn">复制</button>
+                </div>
+                <textarea id="sql-output" placeholder="处理后的SQL将显示在这里..." readonly></textarea>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>SQL压缩工具 v0.1.0 | 使用 <a href="https://github.com/zeroturnaround/sql-formatter"
+                    target="_blank">sql-formatter</a> 提供支持</p>
+        </div>
+    </div>
+
+    <script src="src/preload.js"></script>
+    <script src="src/libs/sql-formatter.js"></script>
+    <script src="src/app.js"></script>
 </body>
 
 </html>
