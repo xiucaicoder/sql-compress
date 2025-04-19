@@ -1,3 +1,5 @@
+import { format } from './libs/sql-formatter/index.js';
+
 /**
  * SQL压缩工具主脚本
  */
@@ -37,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 2000);
     }
 
-    // 压缩SQL
+    // 压缩SQL (修改：使用简单正则移除多余空白)
     compressBtn.addEventListener('click', function () {
         const sql = sqlInput.value.trim();
         if (!sql) {
@@ -46,20 +48,25 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         try {
-            const options = {
-                language: dialectSelect.value,
-                keepComments: keepCommentsCheckbox.checked
-            };
+            // 简单压缩：移除注释（如果选中），并将多个空白替换为单个空格
+            let compressed = sql;
+            if (!keepCommentsCheckbox.checked) {
+                // 移除多行注释 /* */
+                compressed = compressed.replace(/\/\*[\s\S]*?\*\//g, '');
+                // 移除单行注释 --
+                compressed = compressed.replace(/--.*?$/gm, '');
+            }
+            // 移除换行并替换多个空白为单个空格
+            compressed = compressed.replace(/\r?\n/g, ' ').replace(/\s+/g, ' ').trim();
 
-            const compressed = sqlFormatter.compress(sql, options);
             sqlOutput.value = compressed;
         } catch (error) {
-            console.error('SQL压缩错误', error);
+            console.error('SQL压缩错误（基础）', error);
             sqlOutput.value = '处理SQL时出错: ' + error.message;
         }
     });
 
-    // 美化SQL
+    // 美化SQL (修改：使用 sql-formatter)
     formatBtn.addEventListener('click', function () {
         const sql = sqlInput.value.trim();
         if (!sql) {
@@ -68,12 +75,27 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         try {
+            let sqlToFormat = sql;
+            // 如果用户取消勾选"保留注释"，则先移除注释
+            if (!keepCommentsCheckbox.checked) {
+                // 移除多行注释 /* */
+                sqlToFormat = sqlToFormat.replace(/\/\*[\s\S]*?\*\//g, '');
+                // 移除单行注释 --
+                sqlToFormat = sqlToFormat.replace(/--.*?$/gm, '');
+            }
+
+            // 使用 sql-formatter 进行格式化
             const options = {
-                language: dialectSelect.value,
-                keepComments: keepCommentsCheckbox.checked
+                language: dialectSelect.value || 'sql', // 'sql', 'mysql', 'postgresql', etc.
+                tabWidth: 2, // 缩进空格数
+                keywordCase: 'upper', // 关键字大写
+                linesBetweenQueries: 2, // 查询间空行
+                // 根据需要添加更多 sql-formatter 支持的选项
+                // 参考文档：https://github.com/sql-formatter-org/sql-formatter
             };
 
-            const formatted = sqlFormatter.format(sql, options);
+            // 注意：sql-formatter 默认保留注释，不需要 keepComments 选项
+            const formatted = format(sqlToFormat, options); // 修改：传入处理过注释的 sqlToFormat
             sqlOutput.value = formatted;
         } catch (error) {
             console.error('SQL格式化错误', error);
